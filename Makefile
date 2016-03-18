@@ -1,6 +1,10 @@
 VERSION = 3
 PATCHLEVEL = 10
+<<<<<<< HEAD
 SUBLEVEL = 61
+=======
+SUBLEVEL = 101
+>>>>>>> cfe6a40... Linux 3.10.101
 EXTRAVERSION =
 NAME = TOSSUG Baby Fish
 
