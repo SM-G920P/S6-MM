@@ -4230,14 +4230,11 @@ static inline int is_arm_mapping_symbol(const char *str)
 	       && (str[2] == '\0' || str[2] == '.');
 }
 
-<<<<<<< HEAD
-=======
 static const char *symname(struct mod_kallsyms *kallsyms, unsigned int symnum)
 {
 	return kallsyms->strtab + kallsyms->symtab[symnum].st_name;
 }
 
->>>>>>> cfe6a40... Linux 3.10.101
 static const char *get_ksymbol(struct module *mod,
 			       unsigned long addr,
 			       unsigned long *size,
@@ -4261,7 +4258,7 @@ static const char *get_ksymbol(struct module *mod,
 
 		/* We ignore unnamed symbols: they're uninformative
 		 * and inserted at a whim. */
-<<<<<<< HEAD
+
 		if (mod->symtab[i].st_value <= addr
 		    && mod->symtab[i].st_value > mod->symtab[best].st_value
 		    && *(mod->strtab + mod->symtab[i].st_name) != '\0'
@@ -4272,7 +4269,6 @@ static const char *get_ksymbol(struct module *mod,
 		    && *(mod->strtab + mod->symtab[i].st_name) != '\0'
 		    && !is_arm_mapping_symbol(mod->strtab + mod->symtab[i].st_name))
 			nextval = mod->symtab[i].st_value;
-=======
 		if (*symname(kallsyms, i) == '\0'
 		    || is_arm_mapping_symbol(symname(kallsyms, i)))
 			continue;
@@ -4283,7 +4279,6 @@ static const char *get_ksymbol(struct module *mod,
 		if (kallsyms->symtab[i].st_value > addr
 		    && kallsyms->symtab[i].st_value < nextval)
 			nextval = kallsyms->symtab[i].st_value;
->>>>>>> cfe6a40... Linux 3.10.101
 	}
 
 	if (!best)
@@ -4292,13 +4287,11 @@ static const char *get_ksymbol(struct module *mod,
 	if (size)
 		*size = nextval - kallsyms->symtab[best].st_value;
 	if (offset)
-<<<<<<< HEAD
+
 		*offset = addr - mod->symtab[best].st_value;
 	return mod->strtab + mod->symtab[best].st_name;
-=======
 		*offset = addr - kallsyms->symtab[best].st_value;
 	return symname(kallsyms, best);
->>>>>>> cfe6a40... Linux 3.10.101
 }
 
 /* For kallsyms to ask for address resolution.  NULL means not found.  Careful
@@ -4398,19 +4391,17 @@ int module_get_kallsym(unsigned int symnum, unsigned long *value, char *type,
 
 		if (mod->state == MODULE_STATE_UNFORMED)
 			continue;
-<<<<<<< HEAD
+
 		if (symnum < mod->num_symtab) {
 			*value = mod->symtab[symnum].st_value;
 			*type = mod->symtab[symnum].st_info;
 			strlcpy(name, mod->strtab + mod->symtab[symnum].st_name,
 				KSYM_NAME_LEN);
-=======
 		kallsyms = rcu_dereference_sched(mod->kallsyms);
 		if (symnum < kallsyms->num_symtab) {
 			*value = kallsyms->symtab[symnum].st_value;
 			*type = kallsyms->symtab[symnum].st_info;
 			strlcpy(name, symname(kallsyms, symnum), KSYM_NAME_LEN);
->>>>>>> cfe6a40... Linux 3.10.101
 			strlcpy(module_name, mod->name, MODULE_NAME_LEN);
 			*exported = is_exported(name, *value, mod);
 			preempt_enable();
@@ -4427,17 +4418,15 @@ static unsigned long mod_find_symname(struct module *mod, const char *name)
 	unsigned int i;
 	struct mod_kallsyms *kallsyms = rcu_dereference_sched(mod->kallsyms);
 
-<<<<<<< HEAD
+
 	for (i = 0; i < mod->num_symtab; i++)
 		if (strcmp(name, mod->strtab+mod->symtab[i].st_name) == 0 &&
 		    mod->symtab[i].st_info != 'U')
 			return mod->symtab[i].st_value;
-=======
 	for (i = 0; i < kallsyms->num_symtab; i++)
 		if (strcmp(name, symname(kallsyms, i)) == 0 &&
 		    kallsyms->symtab[i].st_info != 'U')
 			return kallsyms->symtab[i].st_value;
->>>>>>> cfe6a40... Linux 3.10.101
 	return 0;
 }
 
@@ -4481,15 +4470,13 @@ int module_kallsyms_on_each_symbol(int (*fn)(void *, const char *,
 
 		if (mod->state == MODULE_STATE_UNFORMED)
 			continue;
-<<<<<<< HEAD
+
 		for (i = 0; i < mod->num_symtab; i++) {
 			ret = fn(data, mod->strtab + mod->symtab[i].st_name,
 				 mod, mod->symtab[i].st_value);
-=======
 		for (i = 0; i < kallsyms->num_symtab; i++) {
 			ret = fn(data, symname(kallsyms, i),
 				 mod, kallsyms->symtab[i].st_value);
->>>>>>> cfe6a40... Linux 3.10.101
 			if (ret != 0)
 				return ret;
 		}
